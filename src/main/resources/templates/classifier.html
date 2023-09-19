@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dog vs Cat</title>
+    <script th:inline="javascript">
+        function loadimg(e){
+            const img_tag = document.querySelector('.fimg');
+            const file = e.currentTarget.files[0];
+            img_tag.src = URL.createObjectURL(file);
+            img_tag.style.visibility = "visible";
+        }
+        async function sendImage(form){
+            let formData = new FormData(form);
+            const options = {
+                method : "post",
+                body : formData
+            }
+
+            try {
+                let response = await fetch(/*[[@{/rest/upload}]]*/ '', options);
+                let catdog = await response.json();
+                let result_tag = document.querySelector("#result");
+                result_tag.value = catdog.catordog;
+            } catch(err) {
+                alert(err);
+            }
+        }
+    </script>
+</head>
+<body>
+    <br>
+    <form method="post" id="form_file" action="" enctype="multipart/form-data">
+        <div style="vertical-align: top;">
+            <div>
+                <img width="150" height="150" class="fimg" src="" style="visibility: hidden;">
+            </div>
+            <div>
+                <input type="text" id="result" value="결과값">
+                <input type="file" name="uploadfile" onchange="loadimg(event)">
+                <input type="button" value="send" onclick="sendImage(form)">
+            </div>
+        </div>
+    </form>
+</body>
+</html>
