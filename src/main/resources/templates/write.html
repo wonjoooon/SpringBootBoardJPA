@@ -13,6 +13,7 @@
     <script th:inline="javascript">
         function backToList(form){
             form.action = /*[[@{/sku/list}]]*/ "";
+            form.method = "get";
             form.submit();
         }
     </script>
@@ -29,7 +30,7 @@
             </td>
         </tr>
         <tr>
-            <td align="right" valign="top" class="class-caption"><br>글 내용:</td>
+            <td align="right" valign="top" class="class-caption"><br>글 내용</td>
             <td colspan="2">
                 <textarea name="i_content" rows="10" maxlength="2000" class="class-content"></textarea>
             </td>

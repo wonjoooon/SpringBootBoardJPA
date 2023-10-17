@@ -11,7 +11,7 @@ public class FileTransferService {
     public String webToLocal(MultipartFile uploadfile) throws IOException {
         String check;
         double doubleCheck;
-        String baseUrl = "C://work/input_image/";
+        String baseUrl = "~/boardProject/input_image/";
 
         if (!uploadfile.isEmpty()) {
 

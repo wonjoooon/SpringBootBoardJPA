@@ -56,7 +56,7 @@
             <span style="padding-right: 30px;"></span>
             <a th:href="@{/sku/view(no=${article.id})}" class="cls1">[[${article.title}]]</a>
         </td>
-        <td width="10%">[[${article.writeDate}]]</td>
+        <td width="10%" th:text="${article.writeDate}"></td>
     </tr>
     </tbody>
 

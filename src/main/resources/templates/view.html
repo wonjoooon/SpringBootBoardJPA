@@ -7,6 +7,14 @@
         #tr_btn_modify {
             display: none;
         }
+        .reply {
+            border : 1px solid black;
+            text-align: center;
+        }
+        .reply-list {
+            border: 1px solid rgb(128, 128, 128);
+            text-align: center;
+        }
     </style>
     <script th:inline="javascript">
         function backToList(form){
@@ -28,6 +36,7 @@
             form.action = /*[[@{/sku/remove}]]*/ "";
             form.submit();
         }
+
     </script>
 </head>
 <body>
@@ -61,7 +70,7 @@
         <tr>
             <td width="150" align="center" bgcolor="#FF9933">작성일</td>
             <td>
-                <input type="text" th:value="${article.writeDate}" readonly>
+                <input type="text" th:value="${article.writeDate.format(formatter)}" readonly width="320">
             </td>
         </tr>
         <tr id="tr_btn">
@@ -84,5 +93,70 @@
         </tbody>
     </table>
 </form>
+<div class="reply">
+  <h3>댓글 쓰기</h3>
+    <h4 sec:authorize="isAnonymous()">로그인 후 이용 가능</h4>
+    <div sec:authorize="isAuthenticated()">
+        <form method="post" action="/reply/add">
+            <input type="hidden" th:value="${article.id}" name="articleNo">
+            <input type="hidden" th:value="${#authentication.getPrincipal().getUsername()}" name="writer">
+            댓글 <input type="text" name="reply_content">
+            <button type="submit">등록</button>
+        </form>
+    </div>
+</div>
+<div class="reply-list">
+    <table>
+        <tbody th:if="${#strings.isEmpty(replyList)}">
+        <tr height="10">
+            <td colspan="5">
+                <p align="center"><b><span style="font-size: 9pt">등록된 댓글이 없습니다.</span></b></p>
+            </td>
+        </tr>
+        </tbody>
+
+        <thead th:unless="${#strings.isEmpty(replyList)}">
+        <tr>
+            <th width="10%">번 호</th>
+            <th width="10%">작성자</th>
+            <th width="30%">댓글</th>
+            <th width="25%">작성 시간</th>
+            <th width="25%">수정 시간</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody th:unless="${#strings.isEmpty(replyList)}">
+        <tr th:each="reply:${replyList}">
+            <td align="center">[[${replyStat.count}]]</td>
+            <td align="center">[[${reply.writer.username}]]</td>
+            <td align="center">[[${reply.content}]]</td>
+            <td align="center" th:text="${reply.writeDate.format(formatter)}"></td>
+            <td align="center" th:text="${reply.modifyDate.format(formatter)}"></td>
+
+            <td align="center"
+                th:if="${#authentication.getPrincipal().getUsername() == reply.writer.username}">
+                <form action="/reply/update" method="post">
+                    <input type="text" name="content">
+                    <input type="hidden" name="id" th:value="${reply.id}">
+                    <input type="hidden" name="articleNo" th:value="${article.id}">
+                    <input type="hidden" name="writer" th:value="${reply.writer.username}">
+                    <button type="submit">수정</button>
+                </form>
+            </td>
+
+            <td align="center"
+                th:if="${#authentication.getPrincipal().getUsername() == reply.writer.username}">
+                <form action="/reply/remove" method="post">
+                    <input type="hidden" name="articleNo" th:value="${article.id}">
+                    <input type="hidden" name="id" th:value="${reply.id}">
+                    <input type="hidden" name="writer" th:value="${reply.writer.username}">
+                    <button type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
